@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in | Campus Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="layout.css">
+<script src="theme.js"></script>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html"><span class="logo">CH</span>Campus Hub</a>
+  <nav class="links" id="mainNav">
+    <a href="index.html">Home</a><a href="register.html">Register</a><a href="signup.html">Sign up</a><a href="signin.html">Sign in</a><a href="home.html">Dashboard</a>
+  </nav>
+  <button class="icon-btn" id="themeBtn" aria-label="Toggle theme">Dark</button>
+</header>
+<main>
+<form class="form-card" data-validate="signin" novalidate>
+  <h1>Sign in</h1>
+  <div class="banner" id="banner" role="alert"></div>
+  <div class="field"><label for="email">Email address</label><input id="email" type="email" data-rule="email" autocomplete="email"><span class="error-msg"></span></div>
+  <div class="field"><label for="password">Password</label>
+    <div class="pw">
+      <input id="password" type="password" data-rule="password" autocomplete="current-password">
+      <button type="button" id="eyeBtn" aria-pressed="false" aria-label="Show or hide password">Show</button>
+    </div><span class="error-msg"></span></div>
+  <button class="btn" type="submit" disabled>Sign in</button>
+  <p>New here? <a href="signup.html">Create an account</a></p>
+</form>
+</main>
+<script src="validation.js"></script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard | Campus Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="layout.css">
+<script src="theme.js"></script>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html"><span class="logo">CH</span>Campus Hub</a>
+  <nav class="links" id="mainNav">
+    <a href="index.html">Home</a><a href="register.html">Register</a><a href="signup.html">Sign up</a><a href="signin.html">Sign in</a><a href="home.html">Dashboard</a>
+  </nav>
+  <button class="icon-btn menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false">Menu</button>
+  <button class="icon-btn" id="themeBtn" aria-label="Toggle theme">Dark</button>
+</header>
+
+<div class="dash">
+  <aside class="side" id="drawer">
+    <h3>Menu</h3>
+    <a href="index.html">Home</a><a href="register.html">Register</a><a href="signup.html">Sign up</a><a href="signin.html">Sign in</a>
+  </aside>
+
+  <main>
+    <h1 id="welcome">Dashboard</h1>
+    <section class="panel tool">
+      <h2>Attendance</h2>
+      <div class="row">
+        <input id="atA" type="number" min="0" placeholder="Attended" aria-label="Attended">
+        <input id="atT" type="number" min="0" placeholder="Total" aria-label="Total">
+        <input id="atR" type="number" min="1" max="99" aria-label="Required percent">
+      </div>
+      <div class="big" id="atP">0%</div>
+      <div class="meter"><i id="atBar"></i></div>
+      <p id="atMsg"></p>
+    </section>
+    <section class="panel tool">
+      <h2>SGPA</h2>
+      <p>Credits, then grade point (0 to 10).</p>
+      <div id="sgRows"></div>
+      <button class="btn ghost" id="sgAdd">Add subject</button>
+      <div class="big" id="sgVal">0.00</div>
+    </section>
+  </main>
+
+  <aside>
+    <section class="panel tool"><h2>Calculator</h2><div id="calc"></div></section>
+    <section class="panel tool">
+      <h2>Quick notes</h2>
+      <div class="row"><input id="ntIn" placeholder="Write a note" aria-label="Note"><button class="btn" id="ntAdd">Add</button></div>
+      <div id="ntList"></div>
+    </section>
+  </aside>
+</div>
+
+<script src="app.js"></script>
+<script src="calculator.js"></script>
+<script src="chatbot.js"></script>
+</body>
+</html>

@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROAMLY | Explore India</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+:root{--primary:#087f70;--secondary:#e9f7f3;--text:#263a38;--white:#fff;--bg:#f5f9f8}
+body{background:var(--bg);color:var(--text)}
+body.dark{--bg:#142321;--white:#20332f;--text:#edf7f3;--secondary:#29443e}
+button{cursor:pointer;border:0;border-radius:8px;padding:11px 16px}
+.primary{background:var(--primary);color:white}
+.secondary{background:var(--secondary);color:var(--primary)}
+.hidden{display:none!important}
+.container{width:92%;max-width:1200px;margin:auto}
+section{padding:55px 0}
+header{background:var(--white);padding:15px 4%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;position:sticky;top:0;z-index:10;box-shadow:0 2px 12px #0001}
+.logo{font-size:25px;font-weight:bold;color:var(--primary)}
+nav{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+nav a{color:var(--text);text-decoration:none;font-size:14px}
+.hero{min-height:420px;display:flex;align-items:center;color:white;background:linear-gradient(90deg,#052d27dd,#052d2744),url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1600') center/cover;padding:60px 7%}
+.hero h1{font-size:45px;max-width:650px;margin-bottom:15px}
+.hero p{margin-bottom:20px}
+.search-box{display:flex;gap:10px;flex-wrap:wrap;background:var(--white);padding:15px;border-radius:12px;margin-bottom:20px}
+input,select,textarea{padding:12px;border:1px solid #ccc;border-radius:7px;background:var(--white);color:var(--text);margin:6px 0 12px;width:100%}
+.search-box input,.search-box select{flex:1;min-width:170px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
+.card{background:var(--white);border-radius:12px;overflow:hidden;box-shadow:0 3px 15px #0001}
+.card img{width:100%;height:175px;object-fit:cover}
+.card-content{padding:16px}
+.card-content h3{margin:8px 0}
+.card-content p{font-size:14px;line-height:1.6;margin-bottom:10px}
+.card-actions{display:flex;gap:7px;flex-wrap:wrap}
+.card-actions button{font-size:12px}
+.badge{color:var(--primary);font-size:12px;font-weight:bold}
+.section-title{font-size:29px;margin-bottom:24px}
+.panel{background:var(--white);padding:23px;border-radius:12px;margin-bottom:18px;box-shadow:0 3px 15px #0001}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.stat{background:var(--secondary);padding:20px;border-radius:10px}
+.stat h3{font-size:25px;color:var(--primary)}
+footer{background:#123b34;color:white;text-align:center;padding:35px}
+.modal{position:fixed;inset:0;background:#0009;z-index:30;display:flex;align-items:center;justify-content:center;padding:15px}
+.modal-box{background:var(--white);color:var(--text);padding:25px;border-radius:12px;width:100%;max-width:520px;max-height:90vh;overflow:auto}
+.close{float:right}
+#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(120deg,#073b35,#13a58b)}
+.login-box{background:white;color:#263a38;padding:35px;border-radius:15px;width:100%;max-width:410px}
+.login-box h1{text-align:center;color:#087f70;margin-bottom:10px}
+.login-box p{text-align:center;margin:15px 0}
+.login-box button{width:100%}
+.login-box input{background:white;color:#222}
+.login-box a{color:#087f70;cursor:pointer}
+.item-row{padding:13px 0;border-bottom:1px solid #ddd}
+.review{background:var(--secondary);padding:18px;border-radius:10px}
+.gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.gallery img{width:100%;height:180px;object-fit:cover;border-radius:10px}
+#toast{position:fixed;bottom:20px;right:20px;background:#123b34;color:white;padding:15px;border-radius:8px;display:none;z-index:50}
+@media(max-width:700px){header{flex-direction:column;align-items:flex-start}.hero h1{font-size:33px}}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+<div class="login-box">
+<h1>ROAMLY ✈</h1>
+<p>Your journey begins here</p>
+
+<div id="loginForm">
+<label>Email</label>
+<input id="loginEmail" type="email" placeholder="Enter email">
+<label>Password</label>
+<input id="loginPassword" type="password" placeholder="Enter password">
+<button class="primary" onclick="login()">Login</button>
+<p>New traveller? <a onclick="showSignup()">Create account</a></p>
+</div>
+
+<div id="signupForm" class="hidden">
+<label>Name</label>
+<input id="signupName" placeholder="Your name">
+<label>Email</label>
+<input id="signupEmail" type="email" placeholder="Your email">
+<label>Password</label>
+<input id="signupPassword" type="password" placeholder="Create password">
+<button class="primary" onclick="signup()">Create Account</button>
+<p>Already registered? <a onclick="showLogin()">Login</a></p>
+</div>
+</div>
+</div>
+
+<!-- WEBSITE -->
+<div id="websiteContent" class="hidden">
+
+<header>
+<div class="logo">ROAMLY ✈</div>
+<nav>
+<a href="#home">Home</a>
+<a href="#destinations">Destinations</a>
+<a href="#planner">Planner</a>
+<a href="#hotels">Hotels</a>
+<a href="#wishlist">Wishlist</a>
+<a href="#bookings">Bookings</a>
+<a href="#gallery">Gallery</a>
+<a href="#profile">Profile</a>
+<button class="secondary" onclick="toggleDark()">🌙</button>
+<button class="primary" onclick="logout()">Logout</button>
+</nav>
+</header>
+
+<section class="hero" id="home">
+<div>
+<h1>Discover India. Explore the world of travel.</h1>
+<p>Find amazing tourist destinations across every Indian state and Union Territory.</p>
+<div class="search-box">
+<input id="heroSearch" placeholder="Search any tourist destination">
+<button class="primary" onclick="searchDestination()">Explore</button>
+</div>
+</div>
+</section>
+
+<section class="container" id="dashboard">
+<h2 class="section-title">Travel Dashboard</h2>
+<div class="grid">
+<div class="stat"><h3 id="dashBookings">0</h3>Bookings</div>
+<div class="stat"><h3 id="dashWishlist">0</h3>Wishlist</div>
+<div class="stat"><h3 id="dashBudget">₹0</h3>Planned Budget</div>
+<div class="stat"><h3 id="destinationCount">0</h3>Destinations</div>
+</div>
+</section>
+
+<section class="container" id="destinations">
+<h2 class="section-title">Explore India's Tourist Destinations</h2>
+
+<div class="search-box" style="background:var(--secondary)">
+<input id="destinationSearch" placeholder="Search tourist spots or states..." oninput="renderDestinations()">
+
+<select id="stateFilter" onchange="renderDestinations()">
+<option value="All">All States and UTs</option>
+</select>
+
+<select id="categoryFilter" onchange="renderDestinations()">
+<option value="All">All Categories</option>
+<option value="Hill Station">Hill Stations</option>
+<option value="Beach">Beaches</option>
+<option value="Adventure">Adventure</option>
+<option value="Heritage">Heritage</option>
+<option value="Nature">Nature</option>
+</select>
+</div>
+
+<p id="resultCount" style="margin-bottom:18px"></p>
+<div class="grid" id="destinationGrid"></div>
+</section>
+
+<section class="container" id="planner">
+<h2 class="section-title">Trip Planner and Budget Calculator</h2>
+<div class="panel">
+<div class="form-grid">
+<div><label>Destination</label><select id="planDestination"></select></div>
+<div><label>Starting Date</label><input type="date" id="planDate"></div>
+<div><label>Number of Days</label><input type="number" id="planDays" min="1" value="3"></div>
+<div><label>Travellers</label><input type="number" id="planPeople" min="1" value="2"></div>
+<div><label>Daily Budget per Person</label><input type="number" id="dailyBudget" value="2000"></div>
+</div>
+<button class="primary" onclick="calculateBudget()">Calculate</button>
+<button class="secondary" onclick="savePlan()">Save Plan</button>
+<h3 id="budgetResult" style="margin-top:15px"></h3>
+</div>
+</section>
+
+<section class="container" id="hotels">
+<h2 class="section-title">Hotels and Stays</h2>
+<div class="grid" id="hotelGrid"></div>
+</section>
+
+<section class="container" id="wishlist">
+<h2 class="section-title">❤️ My Wishlist</h2>
+<div class="grid" id="wishlistGrid"></div>
+</section>
+
+<section class="container" id="bookings">
+<h2 class="section-title">My Bookings</h2>
+<div class="panel" id="bookingList"></div>
+</section>
+
+<section class="container" id="gallery">
+<h2 class="section-title">Travel Gallery</h2>
+<div class="gallery" id="galleryGrid"></div>
+</section>
+
+<section class="container" id="packing">
+<h2 class="section-title">Packing Checklist</h2>
+<div class="panel">
+<div id="packingItems"></div>
+<input id="newPackingItem" placeholder="Add packing item">
+<button class="primary" onclick="addPackingItem()">Add Item</button>
+</div>
+</section>
+
+<section class="container" id="reviews">
+<h2 class="section-title">Traveller Reviews</h2>
+<div class="panel">
+<label>Your Name</label>
+<input id="reviewName" placeholder="Your name">
+<label>Review</label>
+<textarea id="reviewText" placeholder="Write your experience"></textarea>
+<label>Rating</label>
+<select id="reviewRating">
+<option value="5">★★★★★</option>
+<option value="4">★★★★</option>
+<option value="3">★★★</option>
+<option value="2">★★</option>
+<option value="1">★</option>
+</select>
+<button class="primary" onclick="addReview()">Submit Review</button>
+</div>
+<div class="grid" id="reviewGrid"></div>
+</section>
+
+<section class="container" id="profile">
+<h2 class="section-title">My Profile</h2>
+<div class="panel">
+<h3 id="profileName"></h3>
+<p id="profileEmail"></p>
+</div>
+</section>
+
+<section class="container" id="contact">
+<h2 class="section-title">Contact Us</h2>
+<div class="panel">
+<input id="contactEmail" placeholder="Your email">
+<textarea id="contactMessage" placeholder="Your message"></textarea>
+<button class="primary" onclick="sendContact()">Send Message</button>
+</div>
+</section>
+
+<footer>
+<h2>ROAMLY ✈</h2>
+<p>Explore more. Travel better. Live unforgettable.</p>
+<p>© 2026 ROAMLY</p>
+</footer>
+</div>
+
+<div id="detailModal" class="modal hidden">
+<div class="modal-box">
+<button class="close" onclick="closeModal()">✕</button>
+<div id="detailContent"></div>
+</div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+
+// ==================================================
+// DESTINATIONS - ALL 28 STATES AND 8 UNION TERRITORIES
+// ==================================================
+
+const destinationData = [
+{state:"Andhra Pradesh",places:[["Visakhapatnam","Beach",6000,3],["Araku Valley","Hill Station",5000,3],["Tirupati","Heritage",4000,2],["Gandikota","Adventure",4500,2],["Amaravati","Heritage",4000,2],["Vijayawada","Heritage",4000,2],["Lepakshi","Heritage",3500,1],["Horsley Hills","Hill Station",4500,2]]},
+{state:"Arunachal Pradesh",places:[["Tawang","Hill Station",9000,5],["Ziro Valley","Nature",8000,4],["Bomdila","Hill Station",7000,3],["Sela Pass","Adventure",8500,3],["Namdapha National Park","Nature",8000,3],["Dirang","Nature",7000,3],["Mechuka","Adventure",10000,5]]},
+{state:"Assam",places:[["Kaziranga National Park","Nature",7000,3],["Guwahati","Heritage",4500,2],["Majuli Island","Nature",6000,3],["Sivasagar","Heritage",5000,2],["Haflong","Hill Station",6000,3],["Tezpur","Heritage",4500,2],["Manas National Park","Nature",7000,3]]},
+{state:"Bihar",places:[["Bodh Gaya","Heritage",4000,2],["Nalanda","Heritage",3500,1],["Rajgir","Nature",4000,2],["Patna","Heritage",3500,2],["Vaishali","Heritage",3500,1],["Vikramshila","Heritage",4000,1]]},
+{state:"Chhattisgarh",places:[["Chitrakote Falls","Nature",5000,2],["Tirathgarh Falls","Nature",4500,2],["Barnawapara Wildlife Sanctuary","Nature",5000,2],["Bastar","Nature",5500,3],["Mainpat","Hill Station",5000,3],["Sirpur","Heritage",4000,2],["Kanger Valley National Park","Nature",5000,2]]},
+{state:"Goa",places:[["Baga Beach","Beach",6000,3],["Calangute Beach","Beach",6000,3],["Palolem Beach","Beach",6500,3],["Dudhsagar Falls","Nature",6000,2],["Fort Aguada","Heritage",4500,1],["Anjuna Beach","Beach",5500,2],["Old Goa Churches","Heritage",4500,1],["Vagator Beach","Beach",6000,2]]},
+{state:"Gujarat",places:[["Statue of Unity","Heritage",6000,2],["Rann of Kutch","Nature",8000,4],["Somnath Temple","Heritage",5000,2],["Dwarka","Heritage",5000,2],["Gir National Park","Nature",8000,3],["Saputara","Hill Station",5000,3],["Ahmedabad","Heritage",4500,2],["Champaner","Heritage",4500,2],["Dholavira","Heritage",6000,3]]},
+{state:"Haryana",places:[["Kurukshetra","Heritage",3500,2],["Sultanpur National Park","Nature",3000,1],["Morni Hills","Hill Station",4000,2],["Pinjore Gardens","Nature",3000,1],["Sohna","Nature",3500,1],["Karna Lake","Nature",3000,1]]},
+{state:"Himachal Pradesh",places:[["Manali","Hill Station",9000,5],["Shimla","Hill Station",8000,4],["Dharamshala","Hill Station",7000,3],["McLeod Ganj","Nature",6500,3],["Spiti Valley","Adventure",15000,7],["Dalhousie","Hill Station",8000,4],["Kasol","Adventure",6500,3],["Kullu","Nature",7000,3],["Khajjiar","Nature",7500,3],["Bir Billing","Adventure",8000,3]]},
+{state:"Jharkhand",places:[["Netarhat","Hill Station",4500,3],["Hundru Falls","Nature",4000,2],["Dassam Falls","Nature",3500,1],["Betla National Park","Nature",5000,2],["Deoghar","Heritage",4000,2],["Parasnath Hills","Adventure",4500,2],["Patratu Valley","Nature",4000,2]]},
+{state:"Karnataka",places:[["Coorg","Nature",6500,3],["Hampi","Heritage",5500,3],["Mysore Palace","Heritage",4500,2],["Gokarna","Beach",5500,3],["Chikmagalur","Hill Station",6000,3],["Jog Falls","Nature",5000,2],["Bengaluru","Heritage",4500,2],["Badami Caves","Heritage",4500,2],["Udupi","Beach",5000,2],["Murudeshwar","Beach",5500,2],["Kabini","Nature",8000,3],["Dandeli","Adventure",6500,3],["Belur","Heritage",4000,2],["Halebidu","Heritage",4000,2]]},
+{state:"Kerala",places:[["Munnar","Hill Station",6500,3],["Alleppey","Nature",7000,3],["Wayanad","Nature",6500,3],["Kochi","Heritage",5000,2],["Kovalam","Beach",6000,3],["Thekkady","Nature",6500,3],["Varkala","Beach",6000,3],["Kumarakom","Nature",7000,3],["Athirappilly Falls","Nature",5000,2],["Vagamon","Hill Station",5500,3],["Bekal Fort","Heritage",4500,2],["Ponmudi","Hill Station",4500,2]]},
+{state:"Madhya Pradesh",places:[["Khajuraho","Heritage",6000,3],["Sanchi Stupa","Heritage",4500,2],["Ujjain","Heritage",4500,2],["Gwalior Fort","Heritage",4500,2],["Kanha National Park","Nature",9000,3],["Bandhavgarh National Park","Nature",10000,3],["Pachmarhi","Hill Station",6000,3],["Orchha","Heritage",4500,2],["Bhedaghat","Nature",4500,2],["Mandu","Heritage",4500,2]]},
+{state:"Maharashtra",places:[["Mumbai","Heritage",6000,3],["Pune","Heritage",5000,2],["Lonavala","Hill Station",5000,2],["Mahabaleshwar","Hill Station",6000,3],["Ajanta Caves","Heritage",6000,2],["Ellora Caves","Heritage",6000,2],["Nashik","Heritage",5000,2],["Alibaug","Beach",5500,2],["Matheran","Hill Station",5000,2],["Tadoba National Park","Nature",9000,3],["Shirdi","Heritage",4500,2],["Kolhapur","Heritage",4500,2]]},
+{state:"Manipur",places:[["Loktak Lake","Nature",5500,3],["Imphal","Heritage",4500,2],["Kangla Fort","Heritage",4000,1],["Keibul Lamjao National Park","Nature",5000,2],["Ukhrul","Hill Station",5500,3],["Moreh","Nature",5000,2]]},
+{state:"Meghalaya",places:[["Shillong","Hill Station",6500,3],["Cherrapunji","Nature",6500,3],["Dawki","Nature",6000,2],["Mawlynnong","Nature",5500,2],["Nohkalikai Falls","Nature",5500,2],["Mawsynram","Nature",5500,2],["Laitlum Canyon","Adventure",5000,2],["Jowai","Nature",5000,2]]},
+{state:"Mizoram",places:[["Aizawl","Hill Station",5500,3],["Reiek","Hill Station",5000,2],["Vantawng Falls","Nature",5000,2],["Phawngpui","Adventure",7000,4],["Tam Dil Lake","Nature",4500,2],["Hmuifang","Nature",5000,2]]},
+{state:"Nagaland",places:[["Kohima","Heritage",5500,3],["Dzukou Valley","Adventure",6500,3],["Mokokchung","Nature",5500,3],["Khonoma Village","Heritage",5000,2],["Tuophema","Nature",5000,2],["Mon","Nature",6000,3]]},
+{state:"Odisha",places:[["Puri","Beach",5500,3],["Konark Sun Temple","Heritage",4500,2],["Bhubaneswar","Heritage",4500,2],["Chilika Lake","Nature",5500,2],["Simlipal National Park","Nature",6500,3],["Daringbadi","Hill Station",5500,3],["Gopalpur Beach","Beach",5000,2],["Udayagiri Caves","Heritage",4000,1]]},
+{state:"Punjab",places:[["Golden Temple","Heritage",4000,2],["Jallianwala Bagh","Heritage",3500,1],["Wagah Border","Heritage",3500,1],["Anandpur Sahib","Heritage",4000,2],["Patiala","Heritage",4000,2],["Kapurthala","Heritage",4000,2]]},
+{state:"Rajasthan",places:[["Jaipur","Heritage",6500,3],["Udaipur","Heritage",7000,3],["Jaisalmer","Adventure",8000,3],["Jodhpur","Heritage",6000,3],["Mount Abu","Hill Station",6000,3],["Pushkar","Heritage",5000,2],["Ranthambore","Nature",8500,3],["Chittorgarh Fort","Heritage",5000,2],["Bikaner","Heritage",5000,2],["Ajmer","Heritage",4500,2],["Kumbhalgarh","Heritage",5000,2]]},
+{state:"Sikkim",places:[["Gangtok","Hill Station",8000,4],["Tsomgo Lake","Nature",7500,2],["Nathula Pass","Adventure",8500,2],["Pelling","Hill Station",7500,3],["Lachung","Nature",8500,3],["Yumthang Valley","Nature",8500,3],["Namchi","Heritage",6000,2],["Zuluk","Adventure",8000,3]]},
+{state:"Tamil Nadu",places:[["Ooty","Hill Station",5000,3],["Kodaikanal","Hill Station",5000,3],["Chennai","Beach",4500,2],["Mahabalipuram","Heritage",4500,2],["Madurai","Heritage",4500,2],["Rameswaram","Heritage",5500,2],["Kanyakumari","Beach",5000,2],["Thanjavur","Heritage",4500,2],["Yercaud","Hill Station",4500,2],["Valparai","Nature",5000,3],["Courtallam","Nature",4000,2],["Kolli Hills","Adventure",4500,2],["Hogenakkal Falls","Nature",4500,2],["Kanchipuram","Heritage",4000,2],["Chettinad","Heritage",4500,2],["Pichavaram Mangroves","Nature",4500,2],["Dhanushkodi","Beach",5000,2]]},
+{state:"Telangana",places:[["Hyderabad","Heritage",5000,2],["Charminar","Heritage",3500,1],["Golconda Fort","Heritage",4000,1],["Warangal Fort","Heritage",4500,2],["Ramappa Temple","Heritage",4500,2],["Hussain Sagar","Nature",3500,1],["Nagarjuna Sagar","Nature",4500,2],["Ananthagiri Hills","Hill Station",4500,2]]},
+{state:"Tripura",places:[["Ujjayanta Palace","Heritage",4000,2],["Neermahal","Heritage",4500,2],["Unakoti","Heritage",4500,2],["Jampui Hills","Hill Station",5000,3],["Sepahijala Wildlife Sanctuary","Nature",4000,2],["Dumboor Lake","Nature",4500,2]]},
+{state:"Uttar Pradesh",places:[["Taj Mahal","Heritage",5000,2],["Varanasi","Heritage",5000,3],["Lucknow","Heritage",4500,2],["Ayodhya","Heritage",4500,2],["Mathura","Heritage",4500,2],["Vrindavan","Heritage",4500,2],["Prayagraj","Heritage",4000,2],["Fatehpur Sikri","Heritage",4500,2],["Sarnath","Heritage",4000,1],["Chitrakoot","Nature",4500,2],["Dudhwa National Park","Nature",6500,3]]},
+{state:"Uttarakhand",places:[["Nainital","Hill Station",6500,3],["Mussoorie","Hill Station",6500,3],["Rishikesh","Adventure",6000,3],["Haridwar","Heritage",4500,2],["Kedarnath","Adventure",10000,4],["Badrinath","Heritage",9000,4],["Auli","Adventure",9000,4],["Jim Corbett National Park","Nature",8500,3],["Valley of Flowers","Nature",10000,5],["Chopta","Adventure",7000,3],["Almora","Hill Station",6000,3],["Lansdowne","Hill Station",5500,3]]},
+{state:"West Bengal",places:[["Darjeeling","Hill Station",7500,4],["Kolkata","Heritage",5000,2],["Sundarbans","Nature",7500,3],["Kalimpong","Hill Station",6500,3],["Digha","Beach",5000,2],["Dooars","Nature",6500,3],["Shantiniketan","Heritage",4500,2],["Murshidabad","Heritage",4500,2],["Bishnupur","Heritage",4500,2],["Mirik","Hill Station",6000,2]]},
+{state:"Andaman and Nicobar Islands",places:[["Havelock Island","Beach",15000,5],["Neil Island","Beach",12000,4],["Port Blair","Beach",10000,3],["Ross Island","Heritage",9000,2],["Baratang Island","Nature",11000,3],["Radhanagar Beach","Beach",12000,3]]},
+{state:"Chandigarh",places:[["Rock Garden","Heritage",3000,1],["Sukhna Lake","Nature",3000,1],["Rose Garden","Nature",2500,1],["Capitol Complex","Heritage",3000,1]]},
+{state:"Dadra and Nagar Haveli and Daman and Diu",places:[["Diu Fort","Heritage",4500,2],["Nagoa Beach","Beach",5000,2],["Devka Beach","Beach",4500,2],["Silvassa","Nature",4500,2],["Dudhni Lake","Nature",5000,2],["Jampore Beach","Beach",4500,2]]},
+{state:"Delhi",places:[["Red Fort","Heritage",4000,1],["India Gate","Heritage",3500,1],["Qutub Minar","Heritage",3500,1],["Humayun's Tomb","Heritage",3500,1],["Lotus Temple","Heritage",3000,1],["Akshardham Temple","Heritage",3500,1],["Chandni Chowk","Heritage",3500,1],["Lodhi Garden","Nature",3000,1]]},
+{state:"Jammu and Kashmir",places:[["Srinagar","Nature",9000,4],["Gulmarg","Adventure",10000,4],["Pahalgam","Hill Station",9000,4],["Sonamarg","Nature",9000,3],["Dal Lake","Nature",8000,2],["Vaishno Devi","Heritage",7500,3],["Patnitop","Hill Station",7000,3],["Doodhpathri","Nature",8000,3]]},
+{state:"Ladakh",places:[["Leh","Adventure",15000,5],["Pangong Lake","Nature",16000,3],["Nubra Valley","Adventure",15000,3],["Tso Moriri Lake","Nature",16000,3],["Khardung La","Adventure",14000,2],["Magnetic Hill","Adventure",12000,2],["Thiksey Monastery","Heritage",12000,2],["Zanskar Valley","Adventure",18000,5]]},
+{state:"Lakshadweep",places:[["Agatti Island","Beach",18000,4],["Bangaram Island","Beach",20000,4],["Kavaratti Island","Beach",17000,4],["Minicoy Island","Beach",18000,4],["Kalpeni Island","Beach",17000,3],["Kadmat Island","Beach",18000,4]]},
+{state:"Puducherry",places:[["Pondicherry French Quarter","Heritage",5000,2],["Paradise Beach","Beach",4500,2],["Auroville","Nature",4500,2],["Promenade Beach","Beach",4000,1],["Serenity Beach","Beach",4500,2],["Chunnambar Boat House","Nature",4500,1]]}
+];
+
+const categoryImages={
+"Hill Station":"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=700",
+"Beach":"https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=700",
+"Adventure":"https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=700",
+"Heritage":"https://images.unsplash.com/photo-1477587458883-47145ed94245?w=700",
+"Nature":"https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=700"
+};
+
+const destinations=destinationData.flatMap(region=>
+ region.places.map(place=>({
+ name:place[0],
+ state:region.state,
+ category:place[1],
+ price:place[2],
+ days:place[3],
+ image:categoryImages[place[1]],
+ description:`Explore ${place[0]} in ${region.state}. Discover its attractions, local culture and beautiful scenery.`
+ }))
+);
+
+// ==================================================
+// AUTHENTICATION
+// ==================================================
+
+let currentUser=JSON.parse(localStorage.getItem("roamlyCurrentUser")||"null");
+
+function showSignup(){
+ loginForm.classList.add("hidden");
+ signupForm.classList.remove("hidden");
+}
+function showLogin(){
+ signupForm.classList.add("hidden");
+ loginForm.classList.remove("hidden");
+}
+
+function signup(){
+ let name=signupName.value.trim();
+ let email=signupEmail.value.trim().toLowerCase();
+ let password=signupPassword.value;
+
+ if(!name||!email||!password){notify("Fill all fields");return}
+ if(password.length<6){notify("Password needs 6 characters");return}
+
+ let users=JSON.parse(localStorage.getItem("roamlyUsers")||"[]");
+ if(users.some(u=>u.email===email)){notify("Email already registered");return}
+
+ users.push({name,email,password});
+ localStorage.setItem("roamlyUsers",JSON.stringify(users));
+ notify("Account created");
+ showLogin();
+}
+
+function login(){
+ let email=loginEmail.value.trim().toLowerCase();
+ let password=loginPassword.value;
+ let users=JSON.parse(localStorage.getItem("roamlyUsers")||"[]");
+ let user=users.find(u=>u.email===email&&u.password===password);
+
+ if(!user){notify("Invalid email or password");return}
+
+ currentUser={name:user.name,email:user.email};
+ localStorage.setItem("roamlyCurrentUser",JSON.stringify(currentUser));
+ enterWebsite();
+}
+
+function logout(){
+ localStorage.removeItem("roamlyCurrentUser");
+ location.reload();
+}
+
+function enterWebsite(){
+ if(!currentUser)return;
+ document.getElementById("loginScreen").classList.add("hidden");
+ document.getElementById("websiteContent").classList.remove("hidden");
+ profileName.textContent=currentUser.name;
+ profileEmail.textContent=currentUser.email;
+ refreshAll();
+}
+
+// ==================================================
+// DESTINATION SEARCH AND STATE FILTER
+// ==================================================
+
+function fillStateOptions(){
+ const select=document.getElementById("stateFilter");
+ select.innerHTML='<option value="All">All States and UTs</option>';
+
+ destinationData.forEach(region=>{
+  let option=document.createElement("option");
+  option.value=region.state;
+  option.textContent=region.state;
+  select.appendChild(option);
+ });
+}
+
+function renderDestinations(){
+ const search=destinationSearch.value.toLowerCase();
+ const category=categoryFilter.value;
+ const state=stateFilter.value;
+
+ const results=destinations.filter(d=>
+  (d.name.toLowerCase().includes(search)||d.state.toLowerCase().includes(search))&&
+  (category==="All"||d.category===category)&&
+  (state==="All"||d.state===state)
+ );
+
+ resultCount.textContent=`Showing ${results.length} of ${destinations.length} destinations`;
+
+ destinationGrid.innerHTML=results.map(d=>`
+ <div class="card">
+  <img src="${d.image}" alt="${d.name}">
+  <div class="card-content">
+   <span class="badge">${d.category}</span>
+   <h3>${d.name}</h3>
+   <p>📍 ${d.state}</p>
+   <p>${d.description}</p>
+   <p><b>Estimated cost:</b> ₹${d.price.toLocaleString("en-IN")}</p>
+   <div class="card-actions">
+    <button class="primary" onclick="showDetails('${d.name}')">Explore</button>
+    <button class="secondary" onclick="addWishlist('${d.name}')">♡ Wishlist</button>
+    <button class="secondary" onclick="openWeather('${d.name}')">Weather</button>
+   </div>
+  </div>
+ </div>
+ `).join("")||"<p>No destinations found.</p>";
+}
+
+function searchDestination(){
+ destinationSearch.value=heroSearch.value;
+ renderDestinations();
+ document.getElementById("destinations").scrollIntoView();
+}
+
+function showDetails(name){
+ const d=destinations.find(x=>x.name===name);
+ if(!d)return;
+
+ detailContent.innerHTML=`
+ <img src="${d.image}" style="width:100%;height:210px;object-fit:cover;border-radius:10px">
+ <h2 style="margin:15px 0">${d.name}</h2>
+ <p><b>State:</b> ${d.state}</p>
+ <p><b>Category:</b> ${d.category}</p>
+ <p>${d.description}</p>
+ <p><b>Estimated budget:</b> ₹${d.price.toLocaleString("en-IN")}</p>
+ <p><b>Suggested duration:</b> ${d.days} days</p><br>
+ <button class="primary" onclick="selectForPlan('${d.name}')">Plan Trip</button>
+ <button class="secondary" onclick="openMap('${d.name}, ${d.state}')">Google Maps</button>
+ `;
+ detailModal.classList.remove("hidden");
+}
+
+function closeModal(){detailModal.classList.add("hidden")}
+
+function selectForPlan(name){
+ planDestination.value=name;
+ closeModal();
+ document.getElementById("planner").scrollIntoView();
+}
+
+function openMap(name){
+ window.open("https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(name),"_blank");
+}
+function openWeather(name){
+ window.open("https://www.google.com/search?q="+encodeURIComponent("weather in "+name),"_blank");
+}
+
+// ==================================================
+// WISHLIST
+// ==================================================
+
+function getWishlist(){
+ return JSON.parse(localStorage.getItem("roamlyWishlist_"+currentUser.email)||"[]");
+}
+function saveWishlist(list){
+ localStorage.setItem("roamlyWishlist_"+currentUser.email,JSON.stringify(list));
+}
+function addWishlist(name){
+ let list=getWishlist();
+ if(list.includes(name)){notify("Already saved");return}
+ list.push(name);
+ saveWishlist(list);
+ renderWishlist();
+ updateDashboard();
+ notify("Added to wishlist");
+}
+function removeWishlist(name){
+ saveWishlist(getWishlist().filter(x=>x!==name));
+ renderWishlist();
+ updateDashboard();
+}
+function renderWishlist(){
+ wishlistGrid.innerHTML=getWishlist().map(name=>{
+ let d=destinations.find(x=>x.name===name);
+ if(!d)return "";
+ return `<div class="card">
+ <img src="${d.image}">
+ <div class="card-content">
+ <h3>${d.name}</h3><p>${d.state}</p>
+ <button class="primary" onclick="showDetails('${d.name}')">Explore</button>
+ <button class="secondary" onclick="removeWishlist('${d.name}')">Remove</button>
+ </div></div>`;
+ }).join("")||"<p>Your wishlist is empty.</p>";
+}
+
+// ==================================================
+// TRIP PLANNER
+// ==================================================
+
+function fillPlanOptions(){
+ planDestination.innerHTML=destinations.map(d=>
+ `<option value="${d.name}">${d.name} - ${d.state}</option>`
+ ).join("");
+}
+
+let calculatedBudget=0;
+
+function calculateBudget(){
+ let days=Number(planDays.value);
+ let people=Number(planPeople.value);
+ let daily=Number(dailyBudget.value);
+
+ if(!Number.isInteger(days)||days<1||!Number.isInteger(people)||people<1||daily<0){
+ notify("Enter valid trip details");return;
+ }
+
+ calculatedBudget=days*people*daily;
+ budgetResult.textContent="Estimated total: ₹"+calculatedBudget.toLocaleString("en-IN");
+}
+
+function getPlans(){
+ return JSON.parse(localStorage.getItem("roamlyPlans_"+currentUser.email)||"[]");
+}
+function savePlan(){
+ if(!calculatedBudget)calculateBudget();
+ if(!calculatedBudget)return;
+
+ let plans=getPlans();
+ plans.push({
+ destination:planDestination.value,
+ date:planDate.value,
+ days:planDays.value,
+ people:planPeople.value,
+ budget:calculatedBudget
+ });
+ localStorage.setItem("roamlyPlans_"+currentUser.email,JSON.stringify(plans));
+ updateDashboard();
+ notify("Trip plan saved");
+}
+
+// ==================================================
+// HOTELS AND BOOKINGS
+// ==================================================
+
+const hotels=[
+ {name:"Mountain View Resort",location:"Munnar",price:2500,image:"https://images.unsplash.com/photo-1510798831971-661eb04b3739?w=700"},
+ {name:"Beachside Stay",location:"Goa",price:3500,image:"https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=700"},
+ {name:"Hilltop Retreat",location:"Ooty",price:2200,image:"https://images.unsplash.com/photo-1445019980597-93fa8acb246c?w=700"},
+ {name:"Royal Heritage Hotel",location:"Jaipur",price:4000,image:"https://images.unsplash.com/photo-1566073771259-6a8506099945?w=700"},
+ {name:"Forest Escape Resort",location:"Coorg",price:3000,image:"https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=700"}
+];
+
+function renderHotels(){
+ hotelGrid.innerHTML=hotels.map((h,i)=>`
+ <div class="card">
+ <img src="${h.image}">
+ <div class="card-content">
+ <h3>${h.name}</h3><p>${h.location}</p>
+ <p>₹${h.price} per night</p>
+ <button class="primary" onclick="bookHotel(${i})">Book Hotel</button>
+ </div></div>`).join("");
+}
+
+function getBookings(){
+ return JSON.parse(localStorage.getItem("roamlyBookings_"+currentUser.email)||"[]");
+}
+function saveBookings(list){
+ localStorage.setItem("roamlyBookings_"+currentUser.email,JSON.stringify(list));
+}
+function bookHotel(i){
+ let h=hotels[i];
+ let date=prompt("Enter check-in date YYYY-MM-DD");
+ if(!date)return;
+ let nights=Number(prompt("Number of nights"));
+ if(!Number.isInteger(nights)||nights<1){notify("Invalid nights");return}
+
+ let list=getBookings();
+ list.push({id:Date.now(),name:h.name,type:"Hotel",location:h.location,date,amount:h.price*nights,status:"Confirmed"});
+ saveBookings(list);
+ renderBookings();
+ updateDashboard();
+ notify("Booking saved");
+}
+function renderBookings(){
+ bookingList.innerHTML=getBookings().map(b=>`
+ <div class="item-row">
+ <b>${b.name}</b><br>${b.type} | ${b.location}<br>
+ Date: ${b.date}<br>Amount: ₹${b.amount}<br>Status: ${b.status}
+ ${b.status!=="Cancelled"?`<button class="secondary" onclick="cancelBooking(${b.id})">Cancel</button>`:""}
+ </div>`).join("")||"<p>No bookings yet.</p>";
+}
+function cancelBooking(id){
+ if(!confirm("Cancel this booking?"))return;
+ saveBookings(getBookings().map(b=>b.id===id?{...b,status:"Cancelled"}:b));
+ renderBookings();
+ updateDashboard();
+}
+
+// ==================================================
+// GALLERY
+// ==================================================
+
+function renderGallery(){
+ galleryGrid.innerHTML=destinations.slice(0,30).map(d=>
+ `<img src="${d.image}" alt="${d.name}" title="${d.name}">`
+ ).join("");
+}
+
+// ==================================================
+// PACKING CHECKLIST
+// ==================================================
+
+const defaultItems=["Clothes","Travel documents","Mobile phone","Charger","Power bank","Toiletries","Medicines","Water bottle"];
+
+function getPacking(){
+ return JSON.parse(localStorage.getItem("roamlyPacking_"+currentUser.email)||"null")||defaultItems.map(name=>({name,done:false}));
+}
+function savePacking(list){
+ localStorage.setItem("roamlyPacking_"+currentUser.email,JSON.stringify(list));
+}
+function renderPacking(){
+ packingItems.innerHTML=getPacking().map((x,i)=>`
+ <div class="item-row">
+ <label><input type="checkbox" style="width:auto" ${x.done?"checked":""} onchange="togglePacking(${i})">
+ ${x.name}</label>
+ <button class="secondary" onclick="deletePacking(${i})">Remove</button>
+ </div>`).join("");
+}
+function togglePacking(i){
+ let list=getPacking();list[i].done=!list[i].done;savePacking(list);renderPacking();
+}
+function deletePacking(i){
+ let list=getPacking();list.splice(i,1);savePacking(list);renderPacking();
+}
+function addPackingItem(){
+ let name=newPackingItem.value.trim();
+ if(!name)return;
+ let list=getPacking();list.push({name,done:false});
+ savePacking(list);newPackingItem.value="";renderPacking();
+}
+
+// ==================================================
+// REVIEWS
+// ==================================================
+
+function getReviews(){
+ return JSON.parse(localStorage.getItem("roamlyReviews")||"[]");
+}
+function addReview(){
+ let name=reviewName.value.trim();
+ let text=reviewText.value.trim();
+ let rating=reviewRating.value;
+ if(!name||!text){notify("Fill your review");return}
+ let list=getReviews();
+ list.unshift({name,text,rating});
+ localStorage.setItem("roamlyReviews",JSON.stringify(list));
+ reviewName.value="";reviewText.value="";
+ renderReviews();notify("Review submitted");
+}
+function renderReviews(){
+ reviewGrid.innerHTML=getReviews().map(r=>`
+ <div class="review">
+ <h3>${escapeHTML(r.name)}</h3>
+ <p style="color:#e4a000">${"★".repeat(Number(r.rating))}</p>
+ <p>${escapeHTML(r.text)}</p>
+ </div>`).join("")||"<p>No reviews yet.</p>";
+}
+function escapeHTML(value){
+ return String(value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+// ==================================================
+// CONTACT
+// ==================================================
+
+function sendContact(){
+ let email=contactEmail.value.trim();
+ let message=contactMessage.value.trim();
+ if(!email||!message){notify("Fill all fields");return}
+ window.location.href="mailto:your-email@example.com?subject=ROAMLY Enquiry&body="+encodeURIComponent("From: "+email+"\n"+message);
+}
+
+// ==================================================
+// DASHBOARD, DARK MODE AND NOTIFICATIONS
+// ==================================================
+
+function updateDashboard(){
+ dashBookings.textContent=getBookings().filter(b=>b.status!=="Cancelled").length;
+ dashWishlist.textContent=getWishlist().length;
+ let total=getPlans().reduce((s,p)=>s+Number(p.budget),0);
+ dashBudget.textContent="₹"+total.toLocaleString("en-IN");
+ destinationCount.textContent=destinations.length;
+}
+
+function toggleDark(){
+ document.body.classList.toggle("dark");
+ localStorage.setItem("roamlyDark",document.body.classList.contains("dark"));
+}
+function loadDark(){
+ if(localStorage.getItem("roamlyDark")==="true")document.body.classList.add("dark");
+}
+function notify(message){
+ toast.textContent=message;
+ toast.style.display="block";
+ setTimeout(()=>toast.style.display="none",2800);
+}
+
+function refreshAll(){
+ fillStateOptions();
+ fillPlanOptions();
+ renderDestinations();
+ renderHotels();
+ renderWishlist();
+ renderBookings();
+ renderGallery();
+ renderPacking();
+ renderReviews();
+ updateDashboard();
+ loadDark();
+}
+
+if(currentUser)enterWebsite();
+
+</script>
+</body>
+</html>
